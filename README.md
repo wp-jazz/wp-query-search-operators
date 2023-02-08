@@ -55,13 +55,44 @@ remove_filter( 'wp_link_query_args', 'Jazz\\WPQuerySearchOperators\\parse_wp_que
 To enable search operators for the main query, you could use the [`request`][hook:request] hook:
 
 ```php
+/**
+ * Apply only to the requested query variables (which are applied to the main query).
+ */
 add_filter( 'request', 'Jazz\\WPQuerySearchOperators\\parse_wp_query_args', 10, 1 );
 ```
 
-or the [`pre_get_posts`][hook:pre_get_posts] hook:
+Alternatively, you can use the [`pre_get_posts`][hook:pre_get_posts] hook:
 
 ```php
+/**
+ * Apply to any query.
+ */
 add_action( 'pre_get_posts', 'Jazz\\WPQuerySearchOperators\\parse_wp_query_args', 10, 1 );
+```
+
+```php
+/**
+ * Apply only to the main query.
+ */
+add_action( 'pre_get_posts', function ( WP_Query $wp_query ) : void {
+	if ( $wp_query->is_main_query() ) {
+		Jazz\WPQuerySearchOperators\parse_wp_query_args( $wp_query );
+	}
+}, 10, 1 );
+```
+
+```php
+/**
+ * Apply only to the "menu-quick-search" query.
+ */
+add_action( 'pre_get_posts', function ( WP_Query $wp_query ) : void {
+	if (
+		! $wp_query->is_main_query() &&
+		'menu-quick-search' === ( $_REQUEST['action'] ?? null )
+	) {
+		Jazz\WPQuerySearchOperators\parse_wp_query_args( $wp_query );
+	}
+}, 10, 1 );
 ```
 
 Any attempts to enable search operators later than `pre_get_posts`, or to parse

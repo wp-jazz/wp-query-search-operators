@@ -97,7 +97,7 @@ function get_post_search_operators() : array {
  * @param  ?array<string, array<string, mixed>> $operators If NULL, the default search operators are used.
  * @return ?string
  */
-function get_preg_search_operators_pattern( array $operators = null ) : ?string {
+function get_preg_search_operators_pattern( ?array $operators = null ) : ?string {
 	$operators ??= get_search_operators();
 
 	$patterns = [];
@@ -240,10 +240,11 @@ function parse_search_operator( string $key, string|array $operator ) : array {
 /**
  * Parses any search operators in the query's search parameter.
  *
- * @param  array<string, mixed>|WP_Query $query An array of arguments or an instance of {@see \WP_Query}.
+ * @param  array<string, mixed>|WP_Query        $query     An array of arguments or an instance of {@see \WP_Query}.
+ * @param  ?array<string, array<string, mixed>> $operators If NULL, the default search operators are used.
  * @return array<string, mixed>|WP_Query The mutated $query.
  */
-function parse_wp_query_args( array|WP_Query $query ) : array|WP_Query {
+function parse_wp_query_args( array|WP_Query $query, ?array $operators = null ) : array|WP_Query {
 	$ignore_search_operators = ( $query instanceof WP_Query )
 		? (bool) $query->get( 'ignore_search_operators', false )
 		: (bool) ( $query['ignore_search_operators'] ?? false );
@@ -260,22 +261,27 @@ function parse_wp_query_args( array|WP_Query $query ) : array|WP_Query {
 		return $query;
 	}
 
-	return parse_search_query( $search, $query );
+	return parse_search_query( $search, $query, $operators );
 }
 
 /**
  * Parses any search operators in $search and returns them with any $query.
  *
- * @param  string                        $search The search query to parse.
- * @param  array<string, mixed>|WP_Query $query  An array of arguments or an instance of {@see \WP_Query}.
+ * @param  string                               $search    The search query to parse.
+ * @param  array<string, mixed>|WP_Query        $query     An array of arguments or an instance of {@see \WP_Query}.
+ * @param  ?array<string, array<string, mixed>> $operators If NULL, the default search operators are used.
  * @return array<string, mixed>|WP_Query The mutated $query.
  */
-function parse_search_query( string $search, array|WP_Query $query = [] ) : array|WP_Query {
+function parse_search_query(
+	string $search,
+	array|WP_Query $query = [],
+	?array $operators = null
+) : array|WP_Query {
 	if ( ! str_contains( $search, ':' ) ) {
 		return $query;
 	}
 
-	$operators = get_search_operators();
+	$operators ??= get_search_operators();
 
 	$pattern = get_preg_search_operators_pattern( $operators );
 
