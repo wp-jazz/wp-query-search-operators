@@ -1,0 +1,53 @@
+{
+	"type": "wordpress-plugin",
+	"name": "wp-jazz/wp-query-search-operators",
+	"description": "Adds support for implementing search operators to refine results in WordPress.",
+	"license": "MIT",
+	"keywords": [
+		"jazz",
+		"wordpress",
+		"wp"
+	],
+	"require": {
+		"php": ">=8.0",
+		"composer/installers": "^1.0 || ^2.0"
+	},
+	"require-dev": {
+		"wp-jazz/coding-standards": "^1"
+	},
+	"conflict": {
+		"wordpress/core-implementation": "<5.9"
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"config": {
+		"allow-plugins": {
+			"composer/installers": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		},
+		"preferred-install": "dist",
+		"sort-packages": true
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-main": "1.x-dev"
+		},
+		"installer-name": "jazz-wp-query-search-operators"
+	},
+	"scripts": {
+		"lint": [
+			"@lint:phpcs",
+			"@lint:phpstan",
+			"@lint:psalm"
+		],
+		"lint:phpcs": [
+			"phpcs -ps --colors ."
+		],
+		"lint:phpstan": [
+			"phpstan analyze --xdebug"
+		],
+		"lint:psalm": [
+			"psalm"
+		]
+	}
+}

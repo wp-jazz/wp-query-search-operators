@@ -1,0 +1,26 @@
+{
+	"$schema": "https://raw.githubusercontent.com/wp-hooks/generator/0.9.0/schema.json",
+	"hooks": [
+		{
+			"name": "jazz/query_search_operators/search_operators",
+			"file": "Plugin.php",
+			"type": "filter",
+			"args": 1,
+			"doc": {
+				"description": "Filters the associative array of search operators.",
+				"long_description": "",
+				"long_description_html": "",
+				"tags": [
+					{
+						"name": "param",
+						"content": "Associative array of operator keys and regular expression patterns.",
+						"types": [
+							"array<string, (string|array<string, mixed>)>"
+						],
+						"variable": "$operators"
+					}
+				]
+			}
+		}
+	]
+}
